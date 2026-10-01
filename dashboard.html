@@ -1,0 +1,1868 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sprintly | داشبورد</title>
+<script>
+(function(){var t=localStorage.getItem('sprintly_theme');if(!t){t=window.matchMedia&&window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);})();
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+  /* ============================================================
+   Sprintly Dashboard — Stylesheet
+   ============================================================ */
+
+/* ---------- Reset & Base ---------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --sidebar-width: 264px;
+  --topbar-height: 64px;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --radius-lg: 16px;
+  --transition: 0.2s ease;
+  --font: 'Vazirmatn', system-ui, -apple-system, sans-serif;
+}
+
+/* ---------- Theme: Light ---------- */
+:root,
+[data-theme="light"] {
+  --bg: #f4f5f7;
+  --surface: #ffffff;
+  --surface-2: #f8f9fb;
+  --border: #e5e7eb;
+  --text: #111827;
+  --text-muted: #6b7280;
+
+  --primary: #4f46e5;
+  --primary-hover: #4338ca;
+  --primary-soft: #eef2ff;
+
+  --danger: #ef4444;
+  --danger-soft: #fef2f2;
+  --success: #10b981;
+  --success-soft: #ecfdf5;
+  --warning: #f59e0b;
+  --warning-soft: #fffbeb;
+  --info: #3b82f6;
+  --info-soft: #eff6ff;
+  --orange: #f97316;
+  --orange-soft: #fff7ed;
+  --purple: #8b5cf6;
+  --purple-soft: #f5f3ff;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+  --shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+
+  --overlay: rgba(0, 0, 0, 0.4);
+  --scrollbar-track: #f1f1f1;
+  --scrollbar-thumb: #c1c1c1;
+}
+
+/* ---------- Theme: Dark ---------- */
+[data-theme="dark"] {
+  --bg: #0f1117;
+  --surface: #1a1d27;
+  --surface-2: #232633;
+  --border: #2e3344;
+  --text: #e5e7eb;
+  --text-muted: #9ca3af;
+
+  --primary: #6366f1;
+  --primary-hover: #818cf8;
+  --primary-soft: #1e1b4b;
+
+  --danger: #f87171;
+  --danger-soft: #450a0a;
+  --success: #34d399;
+  --success-soft: #064e3b;
+  --warning: #fbbf24;
+  --warning-soft: #451a03;
+  --info: #60a5fa;
+  --info-soft: #172554;
+  --orange: #fb923c;
+  --orange-soft: #431407;
+  --purple: #a78bfa;
+  --purple-soft: #2e1065;
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+  --shadow: 0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -1px rgba(0,0,0,0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.4), 0 4px 6px -2px rgba(0,0,0,0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0,0,0,0.5), 0 10px 10px -5px rgba(0,0,0,0.3);
+
+  --overlay: rgba(0, 0, 0, 0.6);
+  --scrollbar-track: #1a1d27;
+  --scrollbar-thumb: #3d4155;
+}
+
+/* ---------- Body ---------- */
+html {
+  font-size: 15px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+  transition: background var(--transition), color var(--transition);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* ============================================================
+   Layout
+   ============================================================ */
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--surface);
+  border-inline-end: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  inset-inline-start: 0;
+  bottom: 0;
+  z-index: 100;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background var(--transition);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 20px 20px 16px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: -0.02em;
+}
+
+.brand-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--primary);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.nav-section {
+  padding: 8px 12px;
+}
+
+.nav-title {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  padding: 12px 12px 6px;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  margin-bottom: 2px;
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.nav-link svg {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: opacity var(--transition);
+}
+
+.nav-link:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.nav-link:hover svg {
+  opacity: 1;
+}
+
+.nav-link.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-weight: 600;
+}
+
+.nav-link.active svg {
+  opacity: 1;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+/* ---------- Main Area ---------- */
+.main {
+  flex: 1;
+  margin-inline-start: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  min-width: 0;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+  height: var(--topbar-height);
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  transition: background var(--transition);
+}
+
+.icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--transition);
+  position: relative;
+}
+
+.icon-btn:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.menu-btn {
+  display: none;
+}
+
+/* ---------- Search ---------- */
+.search {
+  flex: 1;
+  max-width: 480px;
+  position: relative;
+}
+
+.search input {
+  width: 100%;
+  height: 40px;
+  padding: 0 40px 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  transition: all var(--transition);
+  outline: none;
+}
+
+.search input::placeholder {
+  color: var(--text-muted);
+}
+
+.search input:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.search svg {
+  position: absolute;
+  inset-inline-start: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* ---------- Topbar Actions ---------- */
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-inline-start: auto;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 12px 6px 6px;
+  border-radius: 24px;
+  background: var(--surface-2);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+
+.user:hover {
+  background: var(--border);
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* ---------- Content ---------- */
+.content {
+  flex: 1;
+  padding: 28px 28px 20px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* ---------- Page Header ---------- */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+}
+
+.page-header h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+
+.page-header p {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}
+
+.header-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: #fff;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: var(--primary-hover);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+}
+
+.btn-outline {
+  background: var(--surface);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-outline:hover {
+  background: var(--surface-2);
+  border-color: var(--text-muted);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-muted);
+  padding: 7px 12px;
+  font-size: 0.82rem;
+}
+
+.btn-ghost:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ---------- Stats ---------- */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: all var(--transition);
+  text-align: start;
+  font-family: var(--font);
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
+}
+
+.stat-card:active {
+  transform: translateY(0);
+}
+
+.stat-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.stat-icon.open {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.stat-icon.progress {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.stat-icon.done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+.stat-icon.due {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stat-info small {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+/* ---------- Panel ---------- */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.panel-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.panel-header p {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.panel-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ---------- Filters ---------- */
+.filters {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
+  background: var(--surface-2);
+}
+
+.select {
+  height: 38px;
+  padding: 0 32px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 10px center;
+  min-width: 140px;
+}
+
+.select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.select:hover {
+  border-color: var(--text-muted);
+}
+
+/* ---------- Table ---------- */
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+thead th {
+  padding: 12px 16px;
+  text-align: start;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background var(--transition);
+}
+
+tbody tr:last-child {
+  border-bottom: none;
+}
+
+tbody tr:hover {
+  background: var(--surface-2);
+}
+
+tbody td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+/* ---------- Task Cell ---------- */
+.task-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 200px;
+}
+
+.task-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.88rem;
+}
+
+.task-id {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-soft);
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: monospace;
+  direction: ltr;
+  flex-shrink: 0;
+}
+
+.task-desc {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  max-width: 320px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Badges ---------- */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.badge-label {
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+
+/* Priority badges */
+.priority-low {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.priority-medium {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.priority-high {
+  background: var(--orange-soft);
+  color: var(--orange);
+}
+
+.priority-critical {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* Status badges */
+.status-open {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.status-progress {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.status-review {
+  background: var(--purple-soft);
+  color: var(--purple);
+}
+
+.status-done {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* ---------- Assignee ---------- */
+.assignee {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.mini-avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-soft);
+  color: var(--primary);
+  font-size: 0.65rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ---------- Due Date ---------- */
+.due {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.due-date {
+  font-size: 0.85rem;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.due-note {
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.due-over {
+  color: var(--danger);
+}
+
+.due-soon {
+  color: var(--warning);
+}
+
+/* ---------- Actions ---------- */
+.actions {
+  display: flex;
+  gap: 4px;
+}
+
+.icon-sm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  color: var(--text-muted);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.icon-sm:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+.icon-sm.danger:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+/* ---------- Empty State ---------- */
+.empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.empty .btn {
+  margin-top: 12px;
+}
+
+/* ---------- Footer ---------- */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ---------- Sidebar Overlay (Mobile) ---------- */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 90;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.sidebar-overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* ---------- Modal ---------- */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.modal-backdrop[hidden] {
+  display: none;
+}
+
+.modal {
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  width: 100%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+  animation: slideUp 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-header h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.modal-body {
+  padding: 24px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 16px 24px;
+  border-top: 1px solid var(--border);
+  justify-content: flex-end;
+}
+
+/* ---------- Form ---------- */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field.full {
+  grid-column: 1 / -1;
+}
+
+.field label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.field input,
+.field textarea,
+.field select {
+  height: 42px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  transition: all var(--transition);
+  outline: none;
+  width: 100%;
+}
+
+.field textarea {
+  height: auto;
+  min-height: 80px;
+  padding: 12px 14px;
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.field select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: left 12px center;
+  padding-left: 34px;
+  cursor: pointer;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--primary);
+  background: var(--surface);
+  box-shadow: 0 0 0 3px var(--primary-soft);
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+/* ---------- Toast ---------- */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: var(--bg);
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  box-shadow: var(--shadow-lg);
+  z-index: 300;
+  opacity: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   Animations
+   ============================================================ */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media (max-width: 1200px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 992px) {
+  .sidebar {
+    transform: translateX(100%);
+  }
+
+  [dir="rtl"] .sidebar {
+    transform: translateX(100%);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-inline-start: 0;
+  }
+
+  .menu-btn {
+    display: flex;
+  }
+
+  .user-name {
+    display: none;
+  }
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 14px;
+  }
+
+  .content {
+    padding: 20px 16px 16px;
+  }
+
+  .page-header {
+    flex-direction: column;
+  }
+
+  .header-actions {
+    width: 100%;
+  }
+
+  .header-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .stats {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .stat-card {
+    padding: 16px;
+    gap: 10px;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .stat-value {
+    font-size: 1.3rem;
+  }
+
+  .filters {
+    flex-direction: column;
+  }
+
+  .select {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .field.full {
+    grid-column: auto;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+
+  .search {
+    max-width: none;
+  }
+
+  .footer {
+    flex-direction: column;
+    text-align: center;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .stats {
+    grid-template-columns: 1fr;
+  }
+
+  .modal {
+    max-height: 95vh;
+    margin: 10px;
+  }
+
+  .modal-body {
+    padding: 16px;
+  }
+
+  .modal-footer {
+    flex-direction: column-reverse;
+  }
+
+  .modal-footer .btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* ============================================================
+   Print
+   ============================================================ */
+@media print {
+  .sidebar,
+  .topbar,
+  .footer,
+  .filters,
+  .panel-actions,
+  .actions,
+  .toast,
+  .modal-backdrop {
+    display: none !important;
+  }
+
+  .main {
+    margin-inline-start: 0;
+  }
+
+  .content {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .panel {
+    border: none;
+    box-shadow: none;
+  }
+}
+</style>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="18" rx="2"/><rect x="14" y="3" width="7" height="10" rx="2"/></svg>
+      </span>
+      Sprintly
+    </a>
+    <div class="nav-section">
+      <p class="nav-title">منوی اصلی</p>
+      <a class="nav-link active" href="dashboard.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        داشبورد
+      </a>
+      <a class="nav-link" href="kanban.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+        بورد
+      </a>
+      <a class="nav-link" href="project.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Issue جدید
+      </a>
+      <a class="nav-link" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+        اسپرینت‌ها
+      </a>
+      <a class="nav-link" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg>
+        گزارش‌ها
+      </a>
+    </div>
+    <div class="nav-section">
+      <p class="nav-title">حساب کاربری</p>
+      <a class="nav-link" href="#">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+        تنظیمات
+      </a>
+      <a class="nav-link" href="login.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        خروج
+      </a>
+    </div>
+    <div class="sidebar-footer">
+      <a class="nav-link" href="index.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+        وب‌سایت
+      </a>
+      <a class="nav-link" href="register.html">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+        ثبت‌نام
+      </a>
+    </div>
+  </aside>
+
+  <div class="main">
+    <header class="topbar">
+      <button class="icon-btn menu-btn" id="menuBtn" aria-label="منو">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+      <div class="search">
+        <input id="globalSearch" type="search" placeholder="جستجوی تسک، برچسب، اسیگنی...">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-btn" id="themeBtn" aria-label="تغییر تم"></button>
+        <button class="icon-btn" id="notifyBtn" aria-label="اعلان‌ها">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span style="position:absolute;top:8px;left:8px;width:8px;height:8px;border-radius:50%;background:var(--danger)"></span>
+        </button>
+        <div class="user">
+          <span class="avatar" id="userAvatar">ک</span>
+          <span class="user-name" id="userName">کاربر</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+      <section class="page-header">
+        <div>
+          <h1 id="greeting">سلام، کاربر</h1>
+          <p>نمای کلی تسک‌ها، اسپرینت‌ها و وضعیت تیم شما.</p>
+        </div>
+        <div class="header-actions">
+          <a class="btn btn-outline" href="kanban.html">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+            بورد
+          </a>
+          <button class="btn btn-primary" id="newTaskBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Issue جدید
+          </button>
+        </div>
+      </section>
+
+      <section class="stats">
+        <button class="stat-card" id="statOpen">
+          <span class="stat-icon open"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+          <span class="stat-info"><small>تسک‌های باز</small><span class="stat-value" id="openCount">0</span></span>
+        </button>
+        <button class="stat-card" id="statProgress">
+          <span class="stat-icon progress"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg></span>
+          <span class="stat-info"><small>در حال انجام</small><span class="stat-value" id="progressCount">0</span></span>
+        </button>
+        <button class="stat-card" id="statDone">
+          <span class="stat-icon done"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+          <span class="stat-info"><small>تکمیل‌شده</small><span class="stat-value" id="doneCount">0</span></span>
+        </button>
+        <button class="stat-card" id="statDue">
+          <span class="stat-icon due"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></span>
+          <span class="stat-info"><small>ددلاین نزدیک</small><span class="stat-value" id="dueCount">0</span></span>
+        </button>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>تسک‌ها</h2>
+            <p>لیست تسک‌ها با فیلتر و جستجو</p>
+          </div>
+          <div class="panel-actions">
+            <button class="btn btn-ghost" id="resetDataBtn" title="بازنشانی داده نمونه">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+              داده نمونه
+            </button>
+            <button class="btn btn-ghost" id="clearFilters">پاک کردن فیلترها</button>
+          </div>
+        </div>
+        <div class="filters">
+          <select class="select" id="statusFilter" aria-label="وضعیت"></select>
+          <select class="select" id="priorityFilter" aria-label="اولویت"></select>
+          <select class="select" id="labelFilter" aria-label="برچسب"></select>
+          <select class="select" id="sprintFilter" aria-label="اسپرینت"></select>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>تسک</th>
+                <th>برچسب</th>
+                <th>اولویت</th>
+                <th>اسایگنی</th>
+                <th>اسپرینت</th>
+                <th>ددلاین</th>
+                <th>وضعیت</th>
+                <th>عملیات</th>
+              </tr>
+            </thead>
+            <tbody id="taskTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>© ۱۴۰۵ Sprintly — داشبورد مدیریت تسک</span>
+      <span>HTML / CSS / JavaScript</span>
+    </footer>
+  </div>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<div class="modal-backdrop" id="taskModal" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-header">
+      <h3 id="modalTitle">Issue جدید</h3>
+      <button class="icon-btn" id="closeModal" aria-label="بستن">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <form id="taskForm">
+      <div class="modal-body">
+        <input type="hidden" id="taskId" name="id">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="taskTitle">عنوان Issue</label>
+            <input id="taskTitle" name="title" required placeholder="مثلا‌ً طراحی صفحه داشبورد">
+          </div>
+          <div class="field full">
+            <label for="taskDescription">توضیحات</label>
+            <textarea id="taskDescription" name="description" placeholder="جزئیات Issue را بنویسید"></textarea>
+          </div>
+          <div class="field">
+            <label for="taskLabel">برچسب</label>
+            <select id="taskLabel" name="label"></select>
+          </div>
+          <div class="field">
+            <label for="taskPriority">اولویت</label>
+            <select id="taskPriority" name="priority"></select>
+          </div>
+          <div class="field">
+            <label for="taskAssignee">اسایگنی</label>
+            <select id="taskAssignee" name="assignee"></select>
+          </div>
+          <div class="field">
+            <label for="taskSprint">اسپرینت</label>
+            <select id="taskSprint" name="sprint"></select>
+          </div>
+          <div class="field">
+            <label for="taskDue">ددلاین</label>
+            <input id="taskDue" name="due" type="date">
+          </div>
+          <div class="field">
+            <label for="taskStatus">وضعیت</label>
+            <select id="taskStatus" name="status"></select>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">ذخیره Issue</button>
+        <button type="button" class="btn btn-outline" id="cancelModal">انصراف</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function () {
+  'use strict';
+
+  var THEME_KEY = 'sprintly_theme';
+  var TASKS_KEY = 'sprintly_tasks';
+  var USER_KEY  = 'sprintly_user';
+
+  var statusMap   = { open: 'باز', progress: 'در حال انجام', review: 'در حال بررسی', done: 'تکمیل شد' };
+  var priorityMap = { low: 'کم', medium: 'متوسط', high: 'بالا', critical: 'فوری' };
+  var labels      = ['فرانت‌اند', 'بک‌اند', 'طراحی', 'بازاریابی', 'پشتیبانی', 'داده'];
+  var sprints     = ['اسپرینت ۱', 'اسپرینت ۲', 'اسپرینت ۳'];
+  var assignees   = ['علی رضایی', 'سارا محمدی', 'رضا کریمی', 'مریم احمدی'];
+  var priorityWeight = { critical: 4, high: 3, medium: 2, low: 1 };
+
+  function $(id) { return document.getElementById(id); }
+
+  /* ---------- Utils ---------- */
+  function esc(v) {
+    return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function initials(name) {
+    var p = String(name || '').trim().split(/\s+/);
+    if (p.length === 1) return p.slice(0, 2);
+    return (p || '') + (p || '');
+  }
+
+  function addDays(n) {
+    var d = new Date();
+    d.setDate(d.getDate() + n);
+    return d.toISOString().slice(0, 10);
+  }
+
+  function daysDiff(dateStr) {
+    if (!dateStr) return null;
+    var t = new Date(); t.setHours(0, 0, 0, 0);
+    var d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return null;
+    return Math.round((d - t) / 86400000);
+  }
+
+  function fmtDate(dateStr) {
+    if (!dateStr) return '—';
+    var d = new Date(dateStr + 'T00:00:00');
+    if (isNaN(d.getTime())) return '—';
+    return new Intl.DateTimeFormat('fa-IR', { day: '2-digit', month: '2-digit', year: 'numeric' }).format(d);
+  }
+
+  function dueInfo(dateStr) {
+    var diff = daysDiff(dateStr);
+    if (diff === null) return { text: 'بدون ددلاین', cls: '' };
+    if (diff < 0)  return { text: Math.abs(diff).toLocaleString('fa-IR') + ' روز عقب', cls: 'due-over' };
+    if (diff === 0) return { text: 'امروز', cls: 'due-soon' };
+    if (diff <= 3)  return { text: diff.toLocaleString('fa-IR') + ' روز مانده', cls: 'due-soon' };
+    return { text: '', cls: '' };
+  }
+
+  /* ---------- Data (seed + load/save) ---------- */
+  function seedData() {
+    return [
+      { id: 'SPR-112', title: 'رفع باگ درگ‌اند‌دراپ موبایل', description: 'درگ کارت‌ها روی موبایل گاهی قطع می‌شود.', label: 'فرانت‌اند', priority: 'critical', assignee: 'علی رضایی', sprint: 'اسپرینت ۱', due: addDays(-1), status: 'progress' },
+      { id: 'SPR-111', title: 'پیاده‌سازی API تسک‌ها', description: 'ایجاد، ویرایش، حذف و لیست تسک‌ها.', label: 'بک‌اند', priority: 'critical', assignee: 'رضا کریمی', sprint: 'اسپرینت ۱', due: addDays(0), status: 'open' },
+      { id: 'SPR-110', title: 'طراحی صفحه داشبورد', description: 'کارت‌های آمار، جدول تسک‌ها و فیلترها.', label: 'طراحی', priority: 'high', assignee: 'سارا محمدی', sprint: 'اسپرینت ۱', due: addDays(1), status: 'progress' },
+      { id: 'SPR-109', title: 'بهینه‌سازی رندر بورد', description: 'کاهش زمان رندر کارت‌های زیاد.', label: 'فرانت‌اند', priority: 'high', assignee: 'علی رضایی', sprint: 'اسپرینت ۲', due: addDays(2), status: 'review' },
+      { id: 'SPR-108', title: 'نوشتن تست واحد', description: 'تست‌های JS برای فیلتر و جستجو.', label: 'فرانت‌اند', priority: 'medium', assignee: 'مریم احمدی', sprint: 'اسپرینت ۲', due: addDays(3), status: 'open' },
+      { id: 'SPR-107', title: 'گزارش Velocity', description: 'خروجی burn-down و سرعت اسپرینت.', label: 'داده', priority: 'low', assignee: 'مریم احمدی', sprint: 'اسپرینت ۳', due: addDays(6), status: 'open' },
+      { id: 'SPR-106', title: 'طراحی ایمیل اعلان', description: 'الگوی اعلان تغییر وضعیت تسک.', label: 'طراحی', priority: 'medium', assignee: 'سارا محمدی', sprint: 'اسپرینت ۳', due: addDays(9), status: 'done' },
+      { id: 'SPR-105', title: 'مستندات API', description: 'مستندسازی endpointهای تسک و اسپرینت.', label: 'بک‌اند', priority: 'low', assignee: 'رضا کریمی', sprint: 'اسپرینت ۳', due: addDays(12), status: 'done' },
+      { id: 'SPR-104', title: 'ایجاد صفحه اسپرینت', description: 'لیست و مدیریت اسپرینت‌ها.', label: 'فرانت‌اند', priority: 'medium', assignee: 'علی رضایی', sprint: 'اسپرینت ۲', due: addDays(4), status: 'open' },
+      { id: 'SPR-103', title: 'پیوست فایل برای Issue', description: 'آپلود تصویر و PDF به Issue.', label: 'بک‌اند', priority: 'high', assignee: 'رضا کریمی', sprint: 'اسپرینت ۲', due: addDays(5), status: 'open' },
+      { id: 'SPR-102', title: 'اعلان لحظه‌ای', description: 'WebSocket برای تغییر وضعیت.', label: 'بک‌اند', priority: 'medium', assignee: 'رضا کریمی', sprint: 'اسپرینت ۳', due: addDays(8), status: 'open' },
+      { id: 'SPR-101', title: 'تم تیره/روشن', description: 'ذخیره‌سازی انتخاب تم در localStorage.', label: 'فرانت‌اند', priority: 'low', assignee: 'علی رضایی', sprint: 'اسپرینت ۱', due: addDays(-3), status: 'done' }
+    ];
+  }
+
+  function loadTasks() {
+    try {
+      var raw = localStorage.getItem(TASKS_KEY);
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        if (Array.isArray(parsed) && parsed.length) return parsed;
+      }
+    } catch (e) {}
+    var seeded = seedData();
+    saveTasksRaw(seeded);
+    return seeded;
+  }
+
+  function saveTasksRaw(list) {
+    try { localStorage.setItem(TASKS_KEY, JSON.stringify(list)); } catch (e) {}
+  }
+
+  function saveTasks() { saveTasksRaw(tasks); }
+
+  function nextId() {
+    var max = tasks.reduce(function (acc, t) {
+      var n = parseInt(String(t.id).split('-') || '0', 10);
+      return isFinite(n) ? Math.max(acc, n) : acc;
+    }, 100);
+    return 'SPR-' + (max + 1);
+  }
+
+  var tasks = loadTasks();
+  var state = { search: '', status: 'all', priority: 'all', label: 'all', sprint: 'all', dueSoon: false };
+
+  /* ---------- Populate Selects ---------- */
+  function populateSelect(sel, entries, allLabel) {
+    if (!sel) return;
+    sel.innerHTML = '';
+    if (allLabel) {
+      var o = document.createElement('option');
+      o.value = 'all'; o.textContent = allLabel;
+      sel.appendChild(o);
+    }
+    entries.forEach(function (e) {
+      var opt = document.createElement('option');
+      opt.value = e; opt.textContent = e;
+      sel.appendChild(opt);
+    });
+  }
+
+  populateSelect($('statusFilter'), Object.keys(statusMap).map(function (k) { return [k, statusMap[k]]; }), 'همه وضعیت‌ها');
+  populateSelect($('priorityFilter'), Object.keys(priorityMap).map(function (k) { return [k, priorityMap[k]]; }), 'همه اولویت‌ها');
+  populateSelect($('labelFilter'), labels.map(function (l) { return [l, l]; }), 'همه برچسب‌ها');
+  populateSelect($('sprintFilter'), sprints.map(function (s) { return [s, s]; }), 'همه اسپرینت‌ها');
+
+  populateSelect($('taskLabel'), labels.map(function (l) { return [l, l]; }));
+  populateSelect($('taskPriority'), Object.keys(priorityMap).map(function (k) { return [k, priorityMap[k]]; }));
+  populateSelect($('taskAssignee'), assignees.map(function (a) { return [a, a]; }));
+  populateSelect($('taskSprint'), sprints.map(function (s) { return [s, s]; }));
+  populateSelect($('taskStatus'), Object.keys(statusMap).map(function (k) { return [k, statusMap[k]]; }));
+
+  /* ---------- Theme ---------- */
+  var moonSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  var sunSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+  function setThemeIcon() {
+    var t = document.documentElement.getAttribute('data-theme');
+    $('themeBtn').innerHTML = t === 'dark' ? sunSVG : moonSVG;
+  }
+
+  $('themeBtn').addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    var next = cur === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+    setThemeIcon();
+  });
+  setThemeIcon();
+
+  /* ---------- User ---------- */
+  var userName = 'کاربر';
+  try { userName = localStorage.getItem(USER_KEY) || 'کاربر'; } catch (e) {}
+  $('userName').textContent = userName;
+  $('userAvatar').textContent = userName.trim().charAt(0) || 'ک';
+  $('greeting').textContent = 'سلام، ' + userName;
+
+  /* ---------- Render Stats (همیشه از داده) ---------- */
+  function renderStats() {
+    var open = 0, prog = 0, done = 0, due = 0;
+    tasks.forEach(function (t) {
+      if (t.status === 'open') open++;
+      if (t.status === 'progress') prog++;
+      if (t.status === 'done') done++;
+      if (t.status !== 'done') {
+        var d = daysDiff(t.due);
+        if (d !== null && d >= 0 && d <= 3) due++;
+      }
+    });
+    $('openCount').textContent = open.toLocaleString('fa-IR');
+    $('progressCount').textContent = prog.toLocaleString('fa-IR');
+    $('doneCount').textContent = done.toLocaleString('fa-IR');
+    $('dueCount').textContent = due.toLocaleString('fa-IR');
+  }
+
+  /* ---------- Render Table ---------- */
+  function renderTable() {
+    var tbody = $('taskTableBody');
+
+    // اگر اصلاً داده‌ای نیست
+    if (!tasks.length) {
+      tbody.innerHTML =
+        '<tr><td colspan="8"><div class="empty">' +
+        '<p style="margin-bottom:12px">هنوز Issue‌ای ثبت نشده است.</p>' +
+        '<button class="btn btn-primary" id="emptySeedBtn" style="margin:0 auto">' +
+        '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>' +
+        'بارگذاری داده نمونه</button>' +
+        '</div></td></tr>';
+      var b = $('emptySeedBtn');
+      if (b) b.addEventListener('click', resetData);
+      return;
+    }
+
+    var q = state.search.toLowerCase();
+    var filtered = tasks.filter(function (t) {
+      var ms = !q || [t.id, t.title, t.description, t.label, t.assignee, t.sprint].some(function (v) {
+        return String(v || '').toLowerCase().indexOf(q) !== -1;
+      });
+      var mst = state.status === 'all' || t.status === state.status;
+      var mp = state.priority === 'all' || t.priority === state.priority;
+      var ml = state.label === 'all' || t.label === state.label;
+      var mspr = state.sprint === 'all' || t.sprint === state.sprint;
+      var md = true;
+      if (state.dueSoon) {
+        var d = daysDiff(t.due);
+        md = d !== null && d >= 0 && d <= 3 && t.status !== 'done';
+      }
+      return ms && mst && mp && ml && mspr && md;
+    });
+
+    // اگر فیلتر نتیجه نداد
+    if (!filtered.length) {
+      tbody.innerHTML = '<tr><td colspan="8"><div class="empty">تسکی با این فیلترها پیدا نشد.</div></td></tr>';
+      return;
+    }
+
+    filtered.sort(function (a, b) {
+      if (!a.due && !b.due) return 0;
+      if (!a.due) return 1;
+      if (!b.due) return -1;
+      var cmp = a.due.localeCompare(b.due);
+      if (cmp !== 0) return cmp;
+      return (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0);
+    });
+
+    tbody.innerHTML = filtered.map(function (t) {
+      var due = dueInfo(t.due);
+      var st = statusMap[t.status] || t.status;
+      var pr = priorityMap[t.priority] || t.priority;
+      return '<tr data-id="' + esc(t.id) + '">' +
+        '<td><div class="task-cell">' +
+          '<div class="task-title"><span class="task-id">' + esc(t.id) + '</span><span>' + esc(t.title) + '</span></div>' +
+          (t.description ? '<span class="task-desc">' + esc(t.description) + '</span>' : '') +
+        '</div></td>' +
+        '<td><span class="badge badge-label">' + esc(t.label) + '</span></td>' +
+        '<td><span class="badge priority-' + esc(t.priority) + '">' + esc(pr) + '</span></td>' +
+        '<td><div class="assignee"><span class="mini-avatar">' + esc(initials(t.assignee)) + '</span><span>' + esc(t.assignee) + '</span></div></td>' +
+        '<td>' + esc(t.sprint) + '</td>' +
+        '<td><div class="due"><span class="due-date">' + fmtDate(t.due) + '</span>' +
+          (due.text ? '<span class="due-note ' + due.cls + '">' + due.text + '</span>' : '') +
+        '</div></td>' +
+        '<td><span class="badge status-' + esc(t.status) + '">' + esc(st) + '</span></td>' +
+        '<td><div class="actions">' +
+          '<button class="icon-sm" data-action="view" title="مشاهده" aria-label="مشاهده"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>' +
+          '<button class="icon-sm" data-action="edit" title="ویرایش" aria-label="ویرایش"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>' +
+          '<button class="icon-sm danger" data-action="delete" title="حذف" aria-label="حذف"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg></button>' +
+        '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function renderAll() { renderStats(); renderTable(); }
+
+  /* ---------- Toast ---------- */
+  var toastTimer;
+  function showToast(msg) {
+    var el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2200);
+  }
+
+  /* ---------- Reset sample data ---------- */
+  function resetData() {
+    tasks = seedData();
+    saveTasks();
+    clearFiltersState();
+    renderAll();
+    showToast('داده نمونه بارگذاری شد');
+  }
+
+  $('resetDataBtn').addEventListener('click', resetData);
+
+  /* ---------- Modal ---------- */
+  function openModal(task) {
+    $('taskForm').reset();
+    if (task) {
+      $('modalTitle').textContent = 'ویرایش Issue';
+      $('taskId').value = task.id;
+      $('taskTitle').value = task.title || '';
+      $('taskDescription').value = task.description || '';
+      $('taskLabel').value = task.label || labels;
+      $('taskPriority').value = task.priority || 'medium';
+      $('taskAssignee').value = task.assignee || assignees;
+      $('taskSprint').value = task.sprint || sprints;
+      $('taskDue').value = task.due || '';
+      $('taskStatus').value = task.status || 'open';
+    } else {
+      $('modalTitle').textContent = 'Issue جدید';
+      $('taskId').value = '';
+      $('taskTitle').value = '';
+      $('taskDescription').value = '';
+      $('taskLabel').value = labels;
+      $('taskPriority').value = 'medium';
+      $('taskAssignee').value = assignees;
+      $('taskSprint').value = sprints;
+      $('taskDue').value = addDays(7);
+      $('taskStatus').value = 'open';
+    }
+    $('taskModal').hidden = false;
+    document.body.style.overflow = 'hidden';
+    setTimeout(function () { $('taskTitle').focus(); }, 50);
+  }
+
+  function closeModal() {
+    $('taskModal').hidden = true;
+    document.body.style.overflow = '';
+  }
+
+  $('newTaskBtn').addEventListener('click', function () { openModal(null); });
+  $('closeModal').addEventListener('click', closeModal);
+  $('cancelModal').addEventListener('click', closeModal);
+  $('taskModal').addEventListener('click', function (e) { if (e.target === $('taskModal')) closeModal(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('taskModal').hidden) closeModal(); });
+
+  $('taskForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fd = new FormData($('taskForm'));
+    var title = String(fd.get('title') || '').trim();
+    if (!title) { showToast('عنوان Issue را وارد کنید'); return; }
+    var id = String(fd.get('id') || '').trim();
+    var data = {
+      id: id || nextId(),
+      title: title,
+      description: String(fd.get('description') || '').trim(),
+      label: fd.get('label') || labels,
+      priority: fd.get('priority') || 'medium',
+      assignee: fd.get('assignee') || assignees,
+      sprint: fd.get('sprint') || sprints,
+      due: fd.get('due') || null,
+      status: fd.get('status') || 'open'
+    };
+    if (id) {
+      var idx = -1;
+      for (var i = 0; i < tasks.length; i++) { if (tasks[i].id === id) { idx = i; break; } }
+      if (idx > -1) tasks[idx] = data; else tasks.unshift(data);
+      showToast('Issue به‌روزرسانی شد');
+    } else {
+      tasks.unshift(data);
+      showToast('Issue ایجاد شد');
+    }
+    saveTasks();
+    renderAll();
+    closeModal();
+  });
+
+  /* ---------- Table Actions ---------- */
+  $('taskTableBody').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-action]');
+    if (!btn) return;
+    var tr = btn.closest('tr');
+    var id = tr.getAttribute('data-id');
+    var task = null;
+    for (var i = 0; i < tasks.length; i++) { if (tasks[i].id === id) { task = tasks[i]; break; } }
+    if (!task) return;
+    var action = btn.getAttribute('data-action');
+    if (action === 'view') {
+      window.location.href = 'project-detail.html?task=' + encodeURIComponent(id);
+    } else if (action === 'edit') {
+      openModal(task);
+    } else if (action === 'delete') {
+      if (confirm('این Issue حذف شود؟')) {
+        tasks = tasks.filter(function (t) { return t.id !== id; });
+        saveTasks();
+        renderAll();
+        showToast('Issue حذف شد');
+      }
+    }
+  });
+
+  /* ---------- Filters ---------- */
+  function clearFiltersState() {
+    state = { search: '', status: 'all', priority: 'all', label: 'all', sprint: 'all', dueSoon: false };
+    $('globalSearch').value = '';
+    $('statusFilter').value = 'all';
+    $('priorityFilter').value = 'all';
+    $('labelFilter').value = 'all';
+    $('sprintFilter').value = 'all';
+  }
+
+  $('globalSearch').addEventListener('input', function (e) { state.search = e.target.value.trim(); renderTable(); });
+  $('statusFilter').addEventListener('change', function (e) { state.status = e.target.value; state.dueSoon = false; renderTable(); });
+  $('priorityFilter').addEventListener('change', function (e) { state.priority = e.target.value; renderTable(); });
+  $('labelFilter').addEventListener('change', function (e) { state.label = e.target.value; renderTable(); });
+  $('sprintFilter').addEventListener('change', function (e) { state.sprint = e.target.value; renderTable(); });
+  $('clearFilters').addEventListener('click', function () { clearFiltersState(); renderTable(); });
+
+  /* ---------- Stats Click ---------- */
+  $('statOpen').addEventListener('click', function () { state.status = 'open'; state.dueSoon = false; $('statusFilter').value = 'open'; renderTable(); });
+  $('statProgress').addEventListener('click', function () { state.status = 'progress'; state.dueSoon = false; $('statusFilter').value = 'progress'; renderTable(); });
+  $('statDone').addEventListener('click', function () { state.status = 'done'; state.dueSoon = false; $('statusFilter').value = 'done'; renderTable(); });
+  $('statDue').addEventListener('click', function () { state.dueSoon = true; state.status = 'all'; $('statusFilter').value = 'all'; renderTable(); });
+
+  /* ---------- Sidebar Mobile ---------- */
+  function closeSidebar() {
+    $('sidebar').classList.remove('open');
+    $('sidebarOverlay').classList.remove('show');
+  }
+  $('menuBtn').addEventListener('click', function () {
+    $('sidebar').classList.add('open');
+    $('sidebarOverlay').classList.add('show');
+  });
+  $('sidebarOverlay').addEventListener('click', closeSidebar);
+  var navLinks = document.querySelectorAll('.sidebar a');
+  for (var i = 0; i < navLinks.length; i++) {
+    navLinks[i].addEventListener('click', closeSidebar);
+  }
+
+  /* ---------- Notify ---------- */
+  $('notifyBtn').addEventListener('click', function () { showToast('اعلان جدیدی ندارید'); });
+
+  /* ---------- Init ---------- */
+  renderAll();
+})();
+</script>
+</body>
+</html>

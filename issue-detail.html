@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Issue #SPR-104 — رفع باگ لاگین موبایل | Sprintly</title>
+<meta name="description" content="جزئیات Issue #SPR-104 در اسپرینتلی — رفع باگ لاگین موبایل.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
+<script>
+(function(){
+  var t=localStorage.getItem('sprintly-theme');
+  if(!t)t=window.matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  document.documentElement.setAttribute('data-theme',t);
+})();
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --violet-50:#f5f3ff;--violet-100:#ede9fe;--violet-200:#ddd6fe;
+  --violet-300:#c4b5fd;--violet-400:#a78bfa;--violet-500:#8b5cf6;--violet-600:#7c3aed;--violet-700:#6d28d9;
+  --indigo-500:#6366f1;--indigo-600:#4f46e5;
+  --grad:linear-gradient(135deg,#7c3aed 0%,#4f46e5 100%);
+  --green:#10b981;--amber:#f59e0b;--red:#ef4444;--blue:#3b82f6;--orange:#f97316;
+  --bg:#ffffff;--bg-soft:#f8f7fc;--surface:#ffffff;--surface-2:#f4f2fb;
+  --text:#1e1b2e;--text-soft:#5b5670;--text-faint:#8b86a0;--border:#e8e5f3;
+  --shadow:0 10px 30px -12px rgba(76,29,149,.15);
+  --shadow-lg:0 24px 60px -20px rgba(76,29,149,.28);
+  --nav-bg:rgba(255,255,255,.82);
+}
+[data-theme="dark"]{
+  --bg:#0e0c1a;--bg-soft:#141126;--surface:#1a1630;--surface-2:#221d3d;
+  --text:#f1effb;--text-soft:#b6b0cf;--text-faint:#7d779a;--border:#2c2748;
+  --shadow:0 10px 30px -12px rgba(0,0,0,.5);
+  --shadow-lg:0 24px 60px -20px rgba(0,0,0,.6);
+  --nav-bg:rgba(14,12,26,.82);
+}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Vazirmatn',system-ui,-apple-system,sans-serif;
+  background:var(--bg);color:var(--text);line-height:1.85;
+  transition:background .3s,color .3s;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit}
+.container{width:min(1200px,94%);margin-inline:auto}
+
+/* Buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-weight:600;font-size:.92rem;padding:10px 20px;border-radius:12px;
+  transition:transform .18s,box-shadow .18s,background .18s,border-color .18s,color .18s;
+  white-space:nowrap;
+}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 8px 20px -8px rgba(109,40,217,.55)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 14px 28px -10px rgba(109,40,217,.65)}
+.btn-outline{border:1.5px solid var(--border);color:var(--text);background:var(--surface)}
+.btn-outline:hover{border-color:var(--violet-400);color:var(--violet-600);background:var(--violet-50)}
+[data-theme="dark"] .btn-outline:hover{background:var(--surface-2)}
+.btn-ghost{color:var(--text-soft)}
+.btn-ghost:hover{color:var(--violet-600);background:var(--violet-50)}
+[data-theme="dark"] .btn-ghost:hover{background:var(--surface-2)}
+.btn-sm{padding:7px 14px;font-size:.85rem;border-radius:10px}
+.btn-lg{padding:13px 28px;font-size:1rem;border-radius:14px}
+
+/* Navbar */
+.nav{
+  position:fixed;inset-inline:0;top:0;z-index:100;
+  background:var(--nav-bg);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid transparent;transition:border-color .3s,box-shadow .3s;
+}
+.nav.scrolled{border-color:var(--border);box-shadow:0 6px 20px -14px rgba(0,0,0,.3)}
+.nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;gap:14px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.1rem}
+.logo-mark{
+  width:36px;height:36px;border-radius:10px;background:var(--grad);
+  display:grid;place-items:center;color:#fff;box-shadow:0 6px 16px -6px rgba(109,40,217,.6);
+  font-size:1.1rem;
+}
+.nav-actions{display:flex;align-items:center;gap:8px}
+.theme-btn{
+  width:38px;height:38px;border-radius:10px;display:grid;place-items:center;
+  border:1px solid var(--border);color:var(--text-soft);transition:.2s;
+}
+.theme-btn:hover{color:var(--violet-600);border-color:var(--violet-400);background:var(--violet-50)}
+[data-theme="dark"] .theme-btn:hover{background:var(--surface-2)}
+.theme-btn .sun{display:none}
+[data-theme="dark"] .theme-btn .sun{display:block}
+[data-theme="dark"] .theme-btn .moon{display:none}
+
+/* Page */
+.page{padding:88px 0 60px}
+.crumbs{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--text-faint);flex-wrap:wrap;margin-bottom:24px}
+.crumbs a:hover{color:var(--violet-600)}
+.crumbs .sep{opacity:.5}
+.crumbs .current{color:var(--text-soft);font-weight:600}
+
+/* Issue Header */
+.issue-header{
+  background:var(--surface);border:1px solid var(--border);border-radius:18px;
+  padding:28px 32px;margin-bottom:24px;box-shadow:var(--shadow);
+}
+.issue-top{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.issue-id{
+  font-size:.82rem;font-weight:700;color:var(--violet-600);
+  background:var(--violet-50);padding:3px 12px;border-radius:8px;
+}
+[data-theme="dark"] .issue-id{background:rgba(139,92,246,.15)}
+.badge{
+  display:inline-flex;align-items:center;gap:5px;padding:3px 12px;
+  border-radius:999px;font-size:.75rem;font-weight:700;
+}
+.badge .dot{width:6px;height:6px;border-radius:50%}
+.badge-todo{background:rgba(59,130,246,.12);color:var(--blue)}
+.badge-todo .dot{background:var(--blue)}
+.badge-inprogress{background:rgba(245,158,11,.12);color:var(--amber)}
+.badge-inprogress .dot{background:var(--amber)}
+.badge-done{background:rgba(16,185,129,.12);color:var(--green)}
+.badge-done .dot{background:var(--green)}
+.badge-critical{background:rgba(239,68,68,.12);color:var(--red)}
+.badge-critical .dot{background:var(--red)}
+.badge-high{background:rgba(249,115,22,.12);color:var(--orange)}
+.badge-high .dot{background:var(--orange)}
+.badge-medium{background:rgba(245,158,11,.12);color:var(--amber)}
+.badge-medium .dot{background:var(--amber)}
+.badge-low{background:rgba(16,185,129,.12);color:var(--green)}
+.badge-low .dot{background:var(--green)}
+.issue-title{font-size:clamp(1.3rem,2.5vw,1.7rem);font-weight:800;margin-bottom:8px}
+.issue-meta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-size:.85rem;color:var(--text-faint)}
+.issue-meta span{display:flex;align-items:center;gap:5px}
+
+/* Layout: Main + Sidebar */
+.issue-layout{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start}
+
+/* Tabs */
+.tabs{
+  display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:24px;
+  overflow-x:auto;scrollbar-width:none;
+}
+.tabs::-webkit-scrollbar{display:none}
+.tab-btn{
+  padding:12px 20px;font-size:.92rem;font-weight:600;color:var(--text-soft);
+  border-bottom:2px solid transparent;margin-bottom:-2px;transition:.2s;white-space:nowrap;
+}
+.tab-btn:hover{color:var(--violet-600)}
+.tab-btn.active{color:var(--violet-600);border-bottom-color:var(--violet-500)}
+.tab-panel{display:none}
+.tab-panel.active{display:block;animation:fadeIn .3s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* Details Tab */
+.detail-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:28px;margin-bottom:16px;
+}
+.detail-card h3{font-size:1rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.detail-card p{color:var(--text-soft);font-size:.95rem;white-space:pre-line}
+.ac-list{display:flex;flex-direction:column;gap:10px}
+.ac-item{
+  display:flex;align-items:flex-start;gap:10px;padding:12px 16px;
+  background:var(--surface-2);border-radius:10px;font-size:.9rem;color:var(--text-soft);
+}
+.ac-item .check{
+  width:20px;height:20px;border-radius:6px;background:rgba(16,185,129,.15);
+  color:var(--green);display:grid;place-items:center;flex-shrink:0;font-size:.75rem;font-weight:700;
+}
+.tags-row{display:flex;gap:8px;flex-wrap:wrap}
+.tag-chip{
+  padding:4px 14px;border-radius:8px;font-size:.82rem;font-weight:600;
+  background:var(--violet-100);color:var(--violet-700);
+}
+[data-theme="dark"] .tag-chip{background:rgba(139,92,246,.2)}
+
+/* Activity Tab */
+.timeline{position:relative;padding-inline-start:28px}
+.timeline::before{
+  content:'';position:absolute;inset-inline-start:8px;top:4px;bottom:4px;
+  width:2px;background:var(--border);border-radius:2px;
+}
+.tl-item{position:relative;padding-bottom:24px}
+.tl-item:last-child{padding-bottom:0}
+.tl-dot{
+  position:absolute;inset-inline-start:-24px;top:4px;
+  width:14px;height:14px;border-radius:50%;border:3px solid var(--surface);
+}
+.tl-dot.create{background:var(--green)}
+.tl-dot.assign{background:var(--blue)}
+.tl-dot.status{background:var(--amber)}
+.tl-dot.comment{background:var(--violet-500)}
+.tl-dot.edit{background:var(--orange)}
+.tl-content{
+  background:var(--surface);border:1px solid var(--border);border-radius:12px;
+  padding:14px 18px;
+}
+.tl-content p{font-size:.9rem;color:var(--text-soft)}
+.tl-content p b{color:var(--text);font-weight:700}
+.tl-time{font-size:.75rem;color:var(--text-faint);margin-top:4px}
+
+/* Comments Tab */
+.comment-list{display:flex;flex-direction:column;gap:16px;margin-bottom:24px}
+.comment{
+  display:flex;gap:14px;background:var(--surface);border:1px solid var(--border);
+  border-radius:14px;padding:18px;
+}
+.comment-avatar{
+  width:40px;height:40px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:.9rem;flex-shrink:0;
+}
+.av-1{background:linear-gradient(135deg,#8b5cf6,#6366f1)}
+.av-2{background:linear-gradient(135deg,#ec4899,#8b5cf6)}
+.av-3{background:linear-gradient(135deg,#10b981,#3b82f6)}
+.av-4{background:linear-gradient(135deg,#f59e0b,#ef4444)}
+.comment-body{flex:1;min-width:0}
+.comment-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.comment-head b{font-size:.9rem}
+.comment-head span{font-size:.75rem;color:var(--text-faint)}
+.comment-body p{font-size:.9rem;color:var(--text-soft)}
+.comment-form{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;
+}
+.comment-form textarea{
+  width:100%;min-height:100px;padding:14px;border-radius:12px;
+  border:1.5px solid var(--border);background:var(--surface-2);color:var(--text);
+  font-size:.92rem;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.comment-form textarea:focus{border-color:var(--violet-400);box-shadow:0 0 0 3px var(--violet-100);background:var(--surface)}
+[data-theme="dark"] .comment-form textarea:focus{box-shadow:0 0 0 3px rgba(139,92,246,.15)}
+.comment-form .form-actions{display:flex;gap:10px;margin-top:14px;justify-content:flex-end}
+
+/* Sidebar */
+.sidebar{display:flex;flex-direction:column;gap:16px;position:sticky;top:80px}
+.side-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:22px;
+}
+.side-card h4{font-size:.88rem;font-weight:700;color:var(--text-faint);margin-bottom:14px;text-transform:uppercase;letter-spacing:.5px}
+.side-field{margin-bottom:14px}
+.side-field:last-child{margin-bottom:0}
+.side-field label{display:block;font-size:.78rem;font-weight:600;color:var(--text-faint);margin-bottom:4px}
+.side-field .val{font-size:.92rem;font-weight:600;color:var(--text)}
+.side-field select{
+  width:100%;padding:8px 12px;border-radius:10px;border:1.5px solid var(--border);
+  background:var(--surface-2);color:var(--text);font-size:.88rem;outline:none;
+  transition:border-color .2s;
+}
+.side-field select:focus{border-color:var(--violet-400)}
+.assignee-row{display:flex;align-items:center;gap:10px}
+.assignee-avatar{
+  width:32px;height:32px;border-radius:50%;display:grid;place-items:center;
+  color:#fff;font-weight:700;font-size:.8rem;
+}
+.assignee-info b{display:block;font-size:.88rem}
+.assignee-info small{font-size:.75rem;color:var(--text-faint)}
+
+/* Footer */
+.footer{border-top:1px solid var(--border);padding:24px 0;margin-top:40px}
+.footer-inner{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:.84rem;color:var(--text-faint)}
+.footer-inner a{transition:.18s}
+.footer-inner a:hover{color:var(--violet-600)}
+
+/* Toast */
+.toast-container{position:fixed;bottom:24px;inset-inline-start:50%;transform:translateX(50%);z-index:300;display:flex;flex-direction:column;gap:8px;align-items:center}
+.toast{
+  padding:12px 22px;border-radius:12px;font-size:.88rem;font-weight:600;
+  box-shadow:var(--shadow-lg);animation:toastIn .3s ease;
+  display:flex;align-items:center;gap:8px;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.toast.success{background:var(--green);color:#fff}
+.toast.info{background:var(--indigo-600);color:#fff}
+.toast.out{animation:toastOut .3s ease forwards}
+@keyframes toastOut{to{opacity:0;transform:translateY(16px)}}
+
+/* Responsive */
+@media(max-width:900px){
+  .issue-layout{grid-template-columns:1fr}
+  .sidebar{position:static;flex-direction:row;flex-wrap:wrap}
+  .side-card{flex:1;min-width:200px}
+}
+@media(max-width:600px){
+  .issue-header{padding:20px}
+  .detail-card{padding:20px}
+  .sidebar{flex-direction:column}
+  .side-card{min-width:0}
+}
+</style>
+</head>
+<body>
+
+<!-- Navbar -->
+<header class="nav" id="navbar">
+  <div class="container nav-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-mark">⚡</span>
+      Sprintly
+    </a>
+    <div class="nav-actions">
+      <button class="theme-btn" id="themeBtn" aria-label="تغییر تم">
+        <svg class="moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        <svg class="sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+      </button>
+      <a href="login.html" class="btn btn-ghost btn-sm">ورود</a>
+      <a href="register.html" class="btn btn-primary btn-sm">شروع رایگان</a>
+    </div>
+  </div>
+</header>
+
+<!-- Page -->
+<div class="container page">
+
+  <!-- Breadcrumbs -->
+  <nav class="crumbs">
+    <a href="index.html">خانه</a><span class="sep">/</span>
+    <a href="kanban.html">بورد کانبان</a><span class="sep">/</span>
+    <span class="current">Issue #SPR-104</span>
+  </nav>
+
+  <!-- Issue Header -->
+  <div class="issue-header">
+    <div class="issue-top">
+      <span class="issue-id">#SPR-104</span>
+      <span class="badge badge-inprogress"><span class="dot"></span>In Progress</span>
+      <span class="badge badge-critical"><span class="dot"></span>Critical</span>
+    </div>
+    <h1 class="issue-title">رفع باگ لاگین موبایل</h1>
+    <div class="issue-meta">
+      <span>📅 ددلاین: ۱۴۰۵/۰۷/۱۰</span>
+      <span>🏃 اسپرینت ۲.۰</span>
+      <span>🏷️ Frontend</span>
+    </div>
+  </div>
+
+  <!-- Layout -->
+  <div class="issue-layout">
+
+    <!-- Main Content -->
+    <div class="main-content">
+
+      <!-- Tabs -->
+      <div class="tabs" id="tabs">
+        <button class="tab-btn active" data-tab="details">توضیحات</button>
+        <button class="tab-btn" data-tab="activity">فعالیت</button>
+        <button class="tab-btn" data-tab="comments">نظرات (۳)</button>
+      </div>
+
+      <!-- Tab: Details -->
+      <div class="tab-panel active" id="tab-details">
+        <div class="detail-card">
+          <h3>📝 توضیحات</h3>
+          <p>کاربرانی که از اپلیکیشن موبایل (iOS و Android) لاگین می‌کنند، پس از وارد کردن اطلاعات صحیح، به صفحه‌ی ۴۰۴ هدایت می‌شوند. این مشکل از نسخه‌ی ۲.۳.۱ شروع شده و با آپدیت SDK پرداخت رخ داده است.
+
+مراحل بازتولید:
+۱. اپلیکیشن موبایل را باز کنید
+۲. روی دکمه‌ی «ورود» بزنید
+۳. شماره موبایل و رمز عبور را وارد کنید
+۴. روی «ورود» بزنید
+۵. به‌جای داشبورد، صفحه‌ی ۴۰۴ نمایش داده می‌شود</p>
+        </div>
+        <div class="detail-card">
+          <h3>✅ Acceptance Criteria</h3>
+          <div class="ac-list">
+            <div class="ac-item"><span class="check">✓</span>کاربر بتواند با شماره موبایل و رمز عبور از اپ موبایل لاگین کند</div>
+            <div class="ac-item"><span class="check">✓</span>پس از لاگین موفق، به صفحه‌ی داشبورد هدایت شود</div>
+            <div class="ac-item"><span class="check">✓</span>در صورت اطلاعات نادرست، پیام خطای مناسب نمایش داده شود</div>
+            <div class="ac-item"><span class="check">✓</span>Session به‌صورت امن (HTTPS) ذخیره شود</div>
+            <div class="ac-item"><span class="check">✓</span>لاگین از طریق شماره موبایل + کد تأیید (OTP) هم کار کند</div>
+          </div>
+        </div>
+        <div class="detail-card">
+          <h3>🏷️ تگ‌ها</h3>
+          <div class="tags-row">
+            <span class="tag-chip">bug</span>
+            <span class="tag-chip">mobile</span>
+            <span class="tag-chip">auth</span>
+            <span class="tag-chip">urgent</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Activity -->
+      <div class="tab-panel" id="tab-activity">
+        <div class="timeline">
+          <div class="tl-item">
+            <span class="tl-dot create"></span>
+            <div class="tl-content">
+              <p><b>مهدی احمدی</b> این Issue را ایجاد کرد</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۱ — ۰۹:۱۵</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-dot assign"></span>
+            <div class="tl-content">
+              <p><b>مهدی احمدی</b> این Issue را به <b>سارا محمدی</b> اسیگن کرد</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۱ — ۱۰:۳۰</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-dot status"></span>
+            <div class="tl-content">
+              <p><b>سارا محمدی</b> وضعیت را از <b>To Do</b> به <b>In Progress</b> تغییر داد</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۲ — ۱۱:۰۰</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-dot edit"></span>
+            <div class="tl-content">
+              <p><b>سارا محمدی</b> برچسب <b>auth</b> را اضافه کرد</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۲ — ۱۴:۲۰</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-dot comment"></span>
+            <div class="tl-content">
+              <p><b>رضا نادری</b> نظر ثبت کرد: «من هم این باگ رو روی اندروید ۱۴ دیدم...»</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۳ — ۰۸:۴۵</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <span class="tl-dot edit"></span>
+            <div class="tl-content">
+              <p><b>مهدی احمدی</b> اولویت را از <b>High</b> به <b>Critical</b> تغییر داد</p>
+              <div class="tl-time">۱۴۰۵/۰۷/۰۳ — ۰۹:۰۰</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab: Comments -->
+      <div class="tab-panel" id="tab-comments">
+        <div class="comment-list" id="commentList">
+          <div class="comment">
+            <span class="comment-avatar av-1">م</span>
+            <div class="comment-body">
+              <div class="comment-head">
+                <b>مهدی احمدی</b>
+                <span>۱۴۰۵/۰۷/۰۱ — ۰۹:۱۵</span>
+              </div>
+              <p>این باگ رو از دیروز داریم. به نظر میاد با آپدیت SDK پرداخت، redirect path عوض شده. باید تو middleware لاگین چک کنیم.</p>
+            </div>
+          </div>
+          <div class="comment">
+            <span class="comment-avatar av-2">س</span>
+            <div class="comment-body">
+              <div class="comment-head">
+                <b>سارا محمدی</b>
+                <span>۱۴۰۵/۰۷/۰۲ — ۱۱:۳۰</span>
+              </div>
+              <p>در حال بررسی‌ام. به نظر میاد تو نسخه‌ی جدید SDK، callback URL یه trailing slash اضافه شده که باعث ۴۰۴ میشه. تا عصر فیکس می‌کنم.</p>
+            </div>
+          </div>
+          <div class="comment">
+            <span class="comment-avatar av-3">ر</span>
+            <div class="comment-body">
+              <div class="comment-head">
+                <b>رضا نادری</b>
+                <span>۱۴۰۵/۰۷/۰۳ — ۰۸::۴۵</span>
+              </div>
+              <p>من هم این باگ رو روی اندروید ۱۴ و iOS ۱۷ دیدم. به نظر میاد مشکل از سمت سرور نیست، بلکه client-side redirect نادرسته. یه HAR file از network tab ضمیمه کردم.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Comment Form -->
+        <div class="comment-form">
+          <textarea id="commentInput" placeholder="نظر خودتون رو بنویسید..."></textarea>
+          <div class="form-actions">
+            <button class="btn btn-primary btn-sm" id="submitComment">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              ثبت نظر
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-card">
+        <h4>جزئیات</h4>
+        <div class="side-field">
+          <label>وضعیت</label>
+          <select id="statusSelect">
+            <option value="backlog">Backlog</option>
+            <option value="todo">To Do</option>
+            <option value="inprogress" selected>In Progress</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+        <div class="side-field">
+          <label>اولویت</label>
+          <select id="prioritySelect">
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical" selected>Critical</option>
+          </select>
+        </div>
+        <div class="side-field">
+          <label>برچسب</label>
+          <select id="labelSelect">
+            <option value="Frontend" selected>Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="Design">Design</option>
+            <option value="QA">QA</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Docs">Docs</option>
+          </select>
+        </div>
+        <div class="side-field">
+          <label>اسپرینت</label>
+          <select id="sprintSelect">
+            <option value="">بدون اسپرینت</option>
+            <option value="sprint-2" selected>اسپرینت ۲.۰</option>
+            <option value="sprint-1.9">اسپرینت ۱.۹</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <h4>افراد</h4>
+        <div class="side-field">
+          <label>اسایگنی</label>
+          <div class="assignee-row">
+            <span class="assignee-avatar av-2">س</span>
+            <div class="assignee-info">
+              <b>سارا محمدی</b>
+              <small>فرانت‌اند دیولوپر</small>
+            </div>
+          </div>
+        </div>
+        <div class="side-field">
+          <label>ایجادکننده</label>
+          <div class="assignee-row">
+            <span class="assignee-avatar av-1">م</span>
+            <div class="assignee-info">
+              <b>مهدی احمدی</b>
+              <small>تیم‌لید</small>
+            </div>
+          </div>
+        </div>
+        <div class="side-field">
+          <label>گزارش‌دهنده</label>
+          <div class="assignee-row">
+            <span class="assignee-avatar av-3">ر</span>
+            <div class="assignee-info">
+              <b>رضا نادری</b>
+              <small>QA</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="side-card">
+        <h4>زمان‌بندی</h4>
+        <div class="side-field">
+          <label>ددلاین</label>
+          <div class="val">📅 ۱۴۰۵/۰۷/۱۰</div>
+        </div>
+        <div class="side-field">
+          <label>ایجاد شده</label>
+          <div class="val">۱۴۰۵/۰۷/۰۱</div>
+        </div>
+        <div class="side-field">
+          <label>آخرین به‌روزرسانی</label>
+          <div class="val">۱۴۰۵/۰۷/۰۳</div>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container footer-inner">
+    <span>© ۱۴۰۵ Sprintly — جزئیات Issue</span>
+    <div style="display:flex;gap:16px;flex-wrap:wrap">
+      <a href="kanban.html">بازگشت به بورد</a>
+      <a href="issue.html">ایجاد Issue</a>
+      <a href="dashboard.html">داشبورد</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+/* ===================== Theme ===================== */
+const root = document.documentElement;
+document.getElementById('themeBtn').addEventListener('click', () => {
+  const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  root.setAttribute('data-theme', next);
+  localStorage.setItem('sprintly-theme', next);
+});
+
+/* ===================== Navbar Scroll ===================== */
+const navbar = document.getElementById('navbar');
+window.addEventListener('scroll', () => {
+  navbar.classList.toggle('scrolled', window.scrollY > 10);
+});
+
+/* ===================== Tabs ===================== */
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabPanels = document.querySelectorAll('.tab-panel');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    tabPanels.forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+  });
+});
+
+/* ===================== Toast ===================== */
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  const icons = {
+    success: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    info: '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'
+  };
+  t.innerHTML = `${icons[type] || ''} ${msg}`;
+  container.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('out');
+    setTimeout(() => t.remove(), 300);
+  }, 2800);
+}
+
+/* ===================== Comment Form ===================== */
+const commentInput = document.getElementById('commentInput');
+const submitComment = document.getElementById('submitComment');
+const commentList = document.getElementById('commentList');
+
+submitComment.addEventListener('click', () => {
+  const text = commentInput.value.trim();
+  if (!text) {
+    showToast('متن نظر خالی است', 'info');
+    return;
+  }
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('fa-IR');
+
+  const comment = document.createElement('div');
+  comment.className = 'comment';
+  comment.innerHTML = `
+    <span class="comment-avatar av-4">ش</span>
+    <div class="comment-body">
+      <div class="comment-head">
+        <b>شما</b>
+        <span>${dateStr}</span>
+      </div>
+      <p>${text.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</p>
+    </div>
+  `;
+  commentList.appendChild(comment);
+  commentInput.value = '';
+
+  // Update comment count in tab
+  const count = commentList.querySelectorAll('.comment').length;
+  document.querySelector('[data-tab="comments"]').textContent = `نظرات (${count})`;
+
+  showToast('نظر شما ثبت شد', 'success');
+});
+
+// Enter to submit (Shift+Enter for newline)
+commentInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    submitComment.click();
+  }
+});
+
+/* ===================== Sidebar Selects ===================== */
+document.getElementById('statusSelect').addEventListener('change', function() {
+  const statusMap = {
+    backlog: 'Backlog',
+    todo: 'To Do',
+    inprogress: 'In Progress',
+    done: 'Done'
+  };
+  showToast(`وضعیت به «${statusMap[this.value]}» تغییر کرد`, 'info');
+});
+
+document.getElementById('prioritySelect').addEventListener('change', function() {
+  showToast(`اولویت به «${this.value.toUpperCase()}» تغییر کرد`, 'info');
+});
+</script>
+</body>
+</html>

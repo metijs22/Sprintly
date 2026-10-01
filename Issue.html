@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sprintly | ایجاد Issue</title>
+
+  <script>
+    (function () {
+      var theme = localStorage.getItem('sprintly_theme');
+      if (!theme) {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+    })();
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+
+      --primary: #4f46e5;
+      --primary-hover: #4338ca;
+      --primary-soft: rgba(79, 70, 229, 0.10);
+      --primary-border: rgba(79, 70, 229, 0.25);
+
+      --success: #16a34a;
+      --success-soft: rgba(22, 163, 74, 0.12);
+      --warning: #d97706;
+      --warning-soft: rgba(217, 119, 6, 0.12);
+      --danger: #dc2626;
+      --danger-soft: rgba(220, 38, 38, 0.12);
+      --info: #0ea5e9;
+      --info-soft: rgba(14, 165, 233, 0.12);
+      --purple: #8b5cf6;
+      --purple-soft: rgba(139, 92, 246, 0.12);
+      --orange: #f97316;
+      --orange-soft: rgba(249, 115, 22, 0.12);
+
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    }
+
+    [data-theme="dark"] {
+      --bg: #0b1020;
+      --surface: #111827;
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --border: #1f2937;
+
+      --primary: #6366f1;
+      --primary-hover: #818cf8;
+      --primary-soft: rgba(99, 102, 241, 0.18);
+      --primary-border: rgba(99, 102, 241, 0.35);
+
+      --success: #22c55e;
+      --success-soft: rgba(34, 197, 94, 0.16);
+      --warning: #f59e0b;
+      --warning-soft: rgba(245, 158, 11, 0.16);
+      --danger: #ef4444;
+      --danger-soft: rgba(239, 68, 68, 0.16);
+      --info: #38bdf8;
+      --info-soft: rgba(56, 189, 248, 0.16);
+      --purple: #a78bfa;
+      --purple-soft: rgba(167, 139, 250, 0.16);
+      --orange: #fb923c;
+      --orange-soft: rgba(251, 146, 60, 0.16);
+
+      --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Vazirmatn', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+      color: inherit;
+    }
+
+    .app {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border-left: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      z-index: 50;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.2rem;
+      color: var(--primary);
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
+    .nav-section {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-title {
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 700;
+      padding: 0 12px;
+      margin-bottom: 6px;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: 0.15s;
+      border: 1px solid transparent;
+    }
+
+    .nav-link:hover {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .nav-link.active {
+      background: var(--primary-soft);
+      color: var(--primary);
+      border-color: var(--primary-border);
+    }
+
+    .sidebar-footer {
+      margin-top: auto;
+      padding-top: 14px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .menu-btn {
+      display: none;
+    }
+
+    .icon-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: 0.15s;
+    }
+
+    .icon-btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .breadcrumb a:hover {
+      color: var(--primary);
+    }
+
+    .breadcrumb span:last-child {
+      color: var(--text);
+    }
+
+    .topbar-actions {
+      margin-inline-start: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .user {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 10px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--surface);
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 0.8rem;
+    }
+
+    .user-name {
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .content {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      flex: 1;
+    }
+
+    .page-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .page-header h1 {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+
+    .page-header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      padding: 11px 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.15s;
+      font-size: 0.95rem;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-hover);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .btn-outline {
+      background: var(--surface);
+      border-color: var(--border);
+      color: var(--text);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .form {
+      display: grid;
+      gap: 16px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .required {
+      color: var(--danger);
+      margin-inline-start: 4px;
+    }
+
+    .input,
+    .select,
+    .textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 12px 14px;
+      outline: none;
+      transition: 0.15s;
+    }
+
+    .textarea {
+      min-height: 130px;
+      resize: vertical;
+    }
+
+    .input:focus,
+    .select:focus,
+    .textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px var(--primary-soft);
+    }
+
+    .input.invalid {
+      border-color: var(--danger);
+      box-shadow: 0 0 0 3px var(--danger-soft);
+    }
+
+    .error {
+      color: var(--danger);
+      font-size: 0.84rem;
+      min-height: 1.1em;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 0.84rem;
+    }
+
+    .checkbox {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      font-size: 0.9rem;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .checkbox input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .footer {
+      padding: 14px 24px;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--surface);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translate(-50%, 20px);
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      padding: 12px 18px;
+      border-radius: 12px;
+      opacity: 0;
+      pointer-events: none;
+      transition: 0.25s;
+      z-index: 200;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      z-index: 45;
+      display: none;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+    }
+
+    @media (max-width: 1100px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        position: fixed;
+        right: 0;
+        top: 0;
+        width: 280px;
+        transform: translateX(100%);
+        transition: transform 0.2s;
+        box-shadow: var(--shadow);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .menu-btn {
+        display: grid;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .topbar {
+        padding: 10px 14px;
+      }
+
+      .content {
+        padding: 14px;
+      }
+
+      .panel {
+        padding: 18px;
+      }
+
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .user-name {
+        display: none;
+      }
+
+      .breadcrumb span:first-child {
+        display: none;
+      }
+
+      .footer {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <a class="brand" href="index.html">
+        <span class="brand-mark">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <rect x="3" y="3" width="7" height="18" rx="2"></rect>
+            <rect x="14" y="3" width="7" height="10" rx="2"></rect>
+          </svg>
+        </span>
+        Sprintly
+      </a>
+
+      <div class="nav-section">
+        <p class="nav-title">منوی اصلی</p>
+        <a class="nav-link" href="dashboard.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">            <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+            <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+            <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+          </svg>
+          داشبورد
+        </a>
+        <a class="nav-link" href="kanban.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
+          </svg>
+          بورد
+        </a>
+        <a class="nav-link active" href="project.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+          Issue جدید
+        </a>
+        <a class="nav-link" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+          </svg>
+          اسپرینت‌ها
+        </a>
+        <a class="nav-link" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 20V10"></path>
+            <path d="M12 20V4"></path>
+            <path d="M6 20v-6"></path>
+          </svg>
+          گزارش‌ها
+        </a>
+      </div>
+
+      <div class="nav-section">
+        <p class="nav-title">حساب کاربری</p>
+        <a class="nav-link" href="#">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"></path>
+          </svg>
+          تنظیمات
+        </a>
+        <a class="nav-link" href="login.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+          خروج
+        </a>
+      </div>
+
+      <div class="sidebar-footer">
+        <a class="nav-link" href="index.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"></path>
+          </svg>
+          وب‌سایت
+        </a>
+        <a class="nav-link" href="register.html">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M16 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"></path>
+            <circle cx="8.5" cy="7" r="4"></circle>
+            <line x1="20" y1="8" x2="20" y2="14"></line>
+            <line x1="23" y1="11" x2="17" y2="11"></line>
+          </svg>
+          ثبت‌نام
+        </a>
+      </div>
+    </aside>
+
+    <div class="main">
+      <header class="topbar">
+        <button class="icon-btn menu-btn" id="menuBtn" aria-label="منو">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+
+        <nav class="breadcrumb">
+          <a href="dashboard.html">داشبورد</a>
+          <span>/</span>
+          <span>Issue جدید</span>
+        </nav>
+
+        <div class="topbar-actions">
+          <button class="icon-btn" id="themeBtn" aria-label="تغییر تم"></button>
+          <div class="user">
+            <span class="avatar" id="userAvatar">ک</span>
+            <span class="user-name" id="userName">کاربر</span>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <section class="page-header">
+          <div>
+            <h1>ایجاد Issue جدید</h1>
+            <p>جزئیات Issue را وارد کنید تا در بورد و داشبورد نمایش داده شود.</p>
+          </div>
+          <div class="header-actions">
+            <a class="btn btn-outline" href="kanban.html">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="18" height="18" rx="2"></rect>
+                <line x1="9" y1="3" x2="9" y2="21"></line>
+                <line x1="15" y1="3" x2="15" y2="21"></line>
+              </svg>
+              بازگشت به بورد
+            </a>
+          </div>
+        </section>
+
+        <section class="panel">
+          <form class="form" id="issueForm" novalidate>
+            <div class="form-grid">
+              <div class="field full">
+                <label for="issueTitle">عنوان Issue <span class="required">*</span></label>
+                <input class="input" id="issueTitle" name="title" type="text" placeholder="مثلاً رفع باگ درگ‌اند‌دراپ بورد" required>
+                <span class="error" id="titleError"></span>
+              </div>
+
+              <div class="field full">
+                <label for="issueDescription">توضیحات</label>
+                <textarea class="textarea" id="issueDescription" name="description" placeholder="شرح کامل Issue، مراحل بازتولید، رفتار مورد انتظار و..."></textarea>
+                <span class="hint">از Markdown برای فرمت‌دهی استفاده کنید.</span>
+              </div>
+
+              <div class="field">
+                <label for="issueType">نوع Issue</label>
+                <select class="select" id="issueType" name="type">
+                  <option value="task">تسک</option>
+                  <option value="bug">باگ</option>
+                  <option value="feature">امکان جدید</option>
+                  <option value="improvement">بهبود</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issuePriority">اولویت <span class="required">*</span></label>
+                <select class="select" id="issuePriority" name="priority">
+                  <option value="low">کم</option>
+                  <option value="medium" selected>متوسط</option>
+                  <option value="high">بالا</option>
+                  <option value="critical">فوری</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issueLabel">برچسب</label>
+                <select class="select" id="issueLabel" name="label">
+                  <option value="frontend">فرانت‌اند</option>
+                  <option value="backend">بک‌اند</option>
+                  <option value="design">طراحی</option>
+                  <option value="marketing">بازاریابی</option>
+                  <option value="support">پشتیبانی</option>
+                  <option value="data">داده</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issueAssignee">اسایگنی به</label>
+                <select class="select" id="issueAssignee" name="assignee">
+                  <option value="">بدون اسایگنی</option>
+                  <option value="ali">علی رضایی</option>
+                  <option value="sara">سارا محمدی</option>
+                  <option value="reza">رضا کریمی</option>
+                  <option value="maryam">مریم احمدی</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issueSprint">اسپرینت</label>
+                <select class="select" id="issueSprint" name="sprint">
+                  <option value="sprint-1">اسپرینت ۱</option>
+                  <option value="sprint-2">اسپرینت ۲</option>
+                  <option value="sprint-3">اسپرینت ۳</option>
+                  <option value="none">بدون اسپرینت</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issueDue">ددلاین</label>
+                <input class="input" id="issueDue" name="due" type="date">
+                <span class="error" id="dueError"></span>
+              </div>
+
+              <div class="field">
+                <label for="issueStatus">وضعیت اولیه</label>
+                <select class="select" id="issueStatus" name="status">
+                  <option value="open">باز</option>
+                  <option value="progress">در حال انجام</option>
+                  <option value="review">در حال بررسی</option>
+                  <option value="done">تکمیل شد</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="issueEstimate">تخمین زمان (ساعت)</label>
+                <input class="input" id="issueEstimate" name="estimate" type="number" min="0" max="160" step="0.5" placeholder="مثلاً 4">
+              </div>
+
+              <div class="field full">
+                <label>تگ‌ها</label>
+                <input class="input" id="issueTags" name="tags" type="text" placeholder="با ویرگول جدا کنید: urgent, mobile, api">
+                <span class="hint">هر تگ را با ویرگول جدا کنید.</span>
+              </div>
+
+              <div class="field full">
+                <label class="checkbox">
+                  <input id="issueNotify" name="notify" type="checkbox" checked>
+                  <span>وقتی وضعیت این Issue تغییر کرد، به من اعلان بده.</span>
+                </label>
+              </div>
+
+              <div class="field full">
+                <label class="checkbox">
+                  <input id="issueBlocker" name="blocker" type="checkbox">
+                  <span>این Issue مانع (Blocker) است و باید فوراً بررسی شود.</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="btn-row">
+              <button type="submit" class="btn btn-primary" id="submitBtn">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 5v14"></path>
+                  <path d="M5 12h14"></path>
+                </svg>
+                ایجاد Issue
+              </button>
+              <button type="button" class="btn btn-outline" id="resetBtn">
+                پاک کردن فرم
+              </button>
+              <a href="dashboard.html" class="btn btn-outline">انصراف</a>
+            </div>
+          </form>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>© ۱۴۰۵ Sprintly — ایجاد Issue</span>
+        <span>HTML / CSS / JavaScript</span>
+      </footer>
+    </div>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var THEME_KEY = 'sprintly_theme';
+      var USER_KEY = 'sprintly_user';
+      var TASKS_KEY = 'sprintly_tasks';
+
+      var moonSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+      var sunSVG = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+
+      function $(id) { return document.getElementById(id); }
+
+      // Theme
+      function setThemeIcon() {
+        var t = document.documentElement.getAttribute('data-theme');
+        $('themeBtn').innerHTML = t === 'dark' ? sunSVG : moonSVG;
+      }
+
+      $('themeBtn').addEventListener('click', function () {
+        var cur = document.documentElement.getAttribute('data-theme');
+        var next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        try { localStorage.setItem(THEME_KEY, next); } catch (e) {}
+        setThemeIcon();
+      });
+      setThemeIcon();
+
+      // User
+      var userName = 'کاربر';
+      try { userName = localStorage.getItem(USER_KEY) || 'کاربر'; } catch (e) {}
+      $('userName').textContent = userName;
+      $('userAvatar').textContent = userName.trim().charAt(0) || 'ک';
+
+      // Toast
+      var toastTimer;
+      function showToast(msg) {
+        var el = $('toast');
+        el.textContent = msg;
+        el.classList.add('show');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2500);
+      }
+
+      // Sidebar mobile
+      function closeSidebar() {
+        $('sidebar').classList.remove('open');
+        $('sidebarOverlay').classList.remove('show');
+      }
+
+      $('menuBtn').addEventListener('click', function () {
+        $('sidebar').classList.add('open');
+        $('sidebarOverlay').classList.add('show');
+      });
+
+      $('sidebarOverlay').addEventListener('click', closeSidebar);
+
+      var navLinks = document.querySelectorAll('.sidebar a');
+      for (var i = 0; i < navLinks.length; i++) {
+        navLinks[i].addEventListener('click', closeSidebar);
+      }
+
+      // Validation
+      function setError(id, msg) {
+        $(id).textContent = msg || '';
+        var input = $(id).previousElementSibling;
+        if (input && input.classList) {
+          input.classList.toggle('invalid', !!msg);
+        }
+      }
+
+      function validate() {
+        var valid = true;
+
+        var title = $('issueTitle').value.trim();
+        if (title.length < 3) {
+          setError('titleError', 'عنوان باید حداقل ۳ کاراکتر باشد');
+          valid = false;
+        } else {
+          setError('titleError', '');
+        }
+
+        var due = $('issueDue').value;
+        if (due) {
+          var d = new Date(due + 'T00:00:00');
+          if (isNaN(d.getTime())) {
+            setError('dueError', 'تاریخ معتبر نیست');
+            valid = false;
+          } else {
+            setError('dueError', '');
+          }
+        } else {
+          setError('dueError', '');
+        }
+
+        return valid;
+      }
+
+      // Live validation
+      $('issueTitle').addEventListener('blur', function () {
+        if (this.value.trim().length < 3) {
+          setError('titleError', 'عنوان باید حداقل ۳ کاراکتر باشد');
+        } else {
+          setError('titleError', '');
+        }
+      });
+
+      // Reset
+      $('resetBtn').addEventListener('click', function () {
+        $('issueForm').reset();
+        setError('titleError', '');
+        setError('dueError', '');
+        $('issueTitle').classList.remove('invalid');
+        showToast('فرم پاک شد');
+      });
+
+      // Submit
+      $('issueForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        if (!validate()) {
+          showToast('لطفاً خطاها را برطرف کنید');
+          return;
+        }
+
+        var btn = $('submitBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg> در حال ذخیره...';
+
+        var fd = new FormData($('issueForm'));
+        var tags = String(fd.get('tags') || '').split(',').map(function (t) { return t.trim(); }).filter(Boolean);
+
+        var issue = {
+          id: nextIssueId(),
+          title: String(fd.get('title') || '').trim(),
+          description: String(fd.get('description') || '').trim(),
+          type: fd.get('type') || 'task',
+          priority: fd.get('priority') || 'medium',
+          label: fd.get('label') || 'frontend',
+          assignee: fd.get('assignee') || '',
+          sprint: fd.get('sprint') || 'none',
+          due: fd.get('due') || null,
+          status: fd.get('status') || 'open',
+          estimate: parseFloat(fd.get('estimate')) || 0,
+          tags: tags,
+          notify: fd.get('notify') === 'on',
+          blocker: fd.get('blocker') === 'on',
+          createdAt: new Date().toISOString()
+        };
+
+        setTimeout(function () {
+          try {
+            var raw = localStorage.getItem(TASKS_KEY);
+            var tasks = raw ? JSON.parse(raw) : [];
+            if (!Array.isArray(tasks)) tasks = [];
+            tasks.unshift(issue);
+            localStorage.setItem(TASKS_KEY, JSON.stringify(tasks));
+          } catch (err) {}
+
+          showToast('Issue «' + issue.title + » ایجاد شد');
+
+          setTimeout(function () {
+            window.location.href = 'dashboard.html';
+          }, 1500);
+        }, 800);
+      });
+
+      function nextIssueId() {
+        var max = 100;
+        try {
+          var raw = localStorage.getItem(TASKS_KEY);
+          if (raw) {
+            var tasks = JSON.parse(raw);
+            if (Array.isArray(tasks)) {
+              for (var i = 0; i < tasks.length; i++) {
+                var n = parseInt(String(tasks[i].id || '').split('-') || '0', 10);
+                if (isFinite(n) && n > max) max = n;
+              }
+            }
+          }
+        } catch (e) {}
+        return 'SPR-' + (max + 1);
+      }
+    })();
+  </script>
+</body>
+</html>
